@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<title>domManip</title>
+</head>
+<body>
+
+<button id="test1">div.innerHTML</button>
+<button id="test2">$.append</button>
+<button id="test3">模拟append实现script加载</button>
+
+<div id="test"></div>
+
+<script>
+	$('#test1').click(function(){
+		var div=document.querySelectorAll('div')[0];
+		//写不闭合标签也可以，html会自动补齐
+		div.innerHTML='<script>alert("慕课网")';
+		div.innerHTML='代码不执行';
+		//如果是appendchild代码会被执行
+		var sc=document.createElement('script');
+		sc.innerHTML='alert("1")';
+		div.appendChild(sc);
+	})
+
+	$('#test2').click(function(){
+		var div=$('div');
+		//当传入script时，jq的html()不会简单的调用原生的innerHTML，而是做了一定的处理，是的script脚本可以被执行
+		div.html('<script>alert("慕课网")').append('代码执行了');
+	})
+
+	$('#test3').click(function(){
+		append(document.querySelectorAll('div')[0],"<script>alert('慕课网')")
+	})
+
+	function buildFragment(elems,context){
+		var fragment=context.createDocumentFragment(),
+		    nodes=[],
+		    i=0,
+		    elem,
+		    l=elems.length;
+		for(;i<l;i++){
+			elem=elems[i];
+			tmp=fragment.appendChild(context.createElement('div'));
+			tmp.innerHTML=elem;
+		}
+		return fragment;
+	}
+
+	function disableScript(elem){
+		elem.type=(elem.getAttribute('type')!==null)+'/'+elem.type;
+		return elem;
+	}
+
+	function restoreScript(elme){
+		elem.removeAttribute('type');
+		return elem;
+	}
+
+	function domManip(parentEles,target,callback){
+		var l=parentEles.length;
+		var iNoClone=l-1;
+		var scripts;
+		var hasScripts;
+		if(l){
+			var fragment=buildFragment([target],parentEles[0].ownerDocument);
+			var first=fragment.firstChild.firstChild;
+			if(first){
+				//script 标签的值如果不是规定的那几种，不会执行
+				scripts=disableScript(first);
+				hasScripts=true;
+				callback.call(parentEles,scripts);
+			}
+			if(hasScripts){
+				restoreScript(scripts);
+				var code=scripts.textContent.replace(/^\s*<!(?:\[\CDATA\[|--)|(?:\]\]|--)>\s*$/g,"");
+				eval(code);
+			}
+		}
+	}
+	function append(parentEles,target){
+		return domManip([parentEles],target,function(elem){
+			parentEles.appendChild(elem)
+		});
+	}
+</script>
+<script></script>
+</body>
+</html>
