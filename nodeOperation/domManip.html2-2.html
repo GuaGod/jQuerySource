@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button>模拟append</button>
+    <div id="test"></div>
+    <script>
+    	function buildFragment(elems,context){
+    		var fragment=context.createDocumentFragment(),
+    		    nodes=[],
+    		    i=0,
+    		    elem,
+    		    l=elems.length;
+    		for(;i<l;i++){
+    			elem=elems[i];
+    			tmp=fragment.appendChild(context.createElement('div'));
+    			tmp.innerHTML=elem;
+    		}
+    		return fragment;
+    	}
+    	function domManip(parentEles,target,callback){
+    		var l=parentEles.length;
+    		var iNoClone=l-1;
+    		if(l){
+    			var fragment=buildFragment([target],parentEles[0].ownerDocument);
+    			first=fragment.firstChild;
+    			if(fragment.childNodes.length===1){
+    				fragment=first;
+    			}
+    			if(first){
+    				callback.call(parentEles,first);
+    			}
+    		}
+    	}
+    	function append(parentEles,target){
+    		return domManip([parentEles],target,function(elem){
+    			parentEles.appendChild(elem);
+    		})
+    	}
+    </script>
+</body>
+</html>
