@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<title>innerHTML</title>
+</head>
+<body>
+
+<button id="test">innerHTML的兼容处理</button>
+
+<script type="text/javascript">
+    var $newdiv1=$('');
+    
+    function bulidFragment(){
+        var nodes=[];
+        var fragment=document.createDocumentFragment();
+        var tmp=tmp||fragment.appendChild(document.createElement());
+        tag=(/<[\w:]+/.exec(elem)||["",""])[1].toLowerCase();
+        wrap=wrapMap[tag]||wrapMap._default;
+        temp.innerHTML=wrap[1]+elem.replace(rxhtmlTag,"<$1></$2>")+wrap[2];
+        j=wrap[0];
+         while(j--){
+             tmp=tmp.lastChild;
+         }
+         jQuery.merge(nodes,temp.childNodes);
+         document.body.appendChild(tmp);
+    }
+    $('#test').click(function(){
+            bulidFragment('<td>慕课网</td>');
+    })
+
+</script>
+</body>
+</html>
