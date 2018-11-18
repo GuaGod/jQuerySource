@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<title>domManip</title>
+</head>
+<body>
+<div id='foo'>Hello</div>
+<button id="test1">jquery.buildFragment生成文档碎片</button>
+<button id="test2">模拟jquery.buildFragment生成文档碎片</button>
+
+<script type="text/javascript">
+   
+   var $newdiv1=$('<div id="object1"/>'),
+        newdiv2=document.createElement('div');
+         existingdiv1=document.getElementById('foo');
+    var rxhtmlTag=/<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi;
+    var wrapMap={
+        option:[1,"<select multiple='multiple'>","</select>"],
+        thead:[1,"<table>","</table>"],
+        col:[2,"<table><colgroup>","</colgroup></table>"],
+        tr:[2,"<table><tbody>","</tbody></table>"],
+        td:[3,"<table><tbody><tr>","</tr></tbody></table>"],
+        _default:[0,"",""]
+    };
+    wrapMap.optgroup=wrapMap.option;
+    wrapMap.tbody=wrapMap.tfoot=wrapMap.colgroup=wrapMap.caption=wrap.thead;
+    wrapMap.th=wrapMap.td;
+    function buildFragment(elems,context){
+        var elem,tmp,tag,wrap,contains,j,fragment=context.createDocumentFragment(),
+            nodes=[],
+            i=0,
+            l=elems.length;
+        //筛选出不同类型的节点
+        for(;i<l;i++){
+            elem=elems[i];
+            if(elem||elem==0){
+                if(jQuery.type(elem)==='object'){
+                    jQuery.merge(nodes,elem.nodeType?[elem]:elem)
+                }else if(!/<|&#?\w+;/.test(elem)){
+                    nodes.push(context.createTextNode(elem));
+                }else{
+                    tmp=tmp||fragment.appendChild(context.createElement('div'));
+                    tag=(/<([\w:]+)/.exec(elem) || ["", ""])[1].toLowerCase();
+                    wrap=wrapMap[tag]||wrap._default;
+                    tmp.innerHTML=wrap[1]+elem.replace(rxhtmlTag,"<$1></$2>")+wrap[2];
+                    j=wrap[0];
+                    while(j--){
+                        tmp=tmp.lastChild;
+                    }
+                    jQuery.merge(nodes,tmp.childNodes);
+                }
+                
+            }
+        }
+        i=0;
+        while((elem=nodes[i++])){
+            fragment.appendChild(elem)
+        }
+        return fragment;
+    }
+    $('#test1').click(function() {
+	"<table><tbody><tr><td>慕课网</td></tr></tbody></table>"
+	$('body').append($newdiv1, [newdiv2, existingdiv1, '<td>慕课网</td>', '文本', '<script>alert(1)'])
+})
+
+$('#test2').click(function() {
+	//6中类型的数据结构
+	//这里不设计script的执行
+	var fragment = buildFragment([$newdiv1, newdiv2, existingdiv1, '<td>慕课网</td>', '文本', '<script>alert(1)'], document)
+	document.body.appendChild(fragment)
+})
+
+
+
+</script>
+</body>
+</html>
