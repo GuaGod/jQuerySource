@@ -18,6 +18,7 @@
 
 
 <script type="text/javascript">
+//对于after，其实可以用before来模拟，当前节点的下个节点的before就是当前节点的after
 $('#test1').click(function(){
     var inner=document.getElementsByClassName('inner');
     for(var i=0;i<inner.length;i++){
