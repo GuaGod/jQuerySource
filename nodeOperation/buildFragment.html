@@ -25,7 +25,7 @@
         _default:[0,"",""]
     };
     wrapMap.optgroup=wrapMap.option;
-    wrapMap.tbody=wrapMap.tfoot=wrapMap.colgroup=wrapMap.caption=wrap.thead;
+    wrapMap.tbody=wrapMap.tfoot=wrapMap.colgroup=wrapMap.caption=wrapMap.thead;
     wrapMap.th=wrapMap.td;
     function buildFragment(elems,context){
         var elem,tmp,tag,wrap,contains,j,fragment=context.createDocumentFragment(),
@@ -35,15 +35,17 @@
         //筛选出不同类型的节点
         for(;i<l;i++){
             elem=elems[i];
-            if(elem||elem==0){
+            //为什么要判断elem===0？？？
+            if(elem||elem===0){
                 if(jQuery.type(elem)==='object'){
+                    //nodeType可以当做区分jQuery对象和dom对象的一个属性
                     jQuery.merge(nodes,elem.nodeType?[elem]:elem)
                 }else if(!/<|&#?\w+;/.test(elem)){
                     nodes.push(context.createTextNode(elem));
                 }else{
                     tmp=tmp||fragment.appendChild(context.createElement('div'));
                     tag=(/<([\w:]+)/.exec(elem) || ["", ""])[1].toLowerCase();
-                    wrap=wrapMap[tag]||wrap._default;
+                    wrap=wrapMap[tag]||wrapMap._default;
                     tmp.innerHTML=wrap[1]+elem.replace(rxhtmlTag,"<$1></$2>")+wrap[2];
                     j=wrap[0];
                     while(j--){
@@ -55,6 +57,7 @@
             }
         }
         i=0;
+        console.log(nodes);
         while((elem=nodes[i++])){
             fragment.appendChild(elem)
         }
