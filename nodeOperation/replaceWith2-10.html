@@ -26,21 +26,9 @@ $('#test1').click(function(){
     var elem=document.querySelectorAll('div.second')[0];
     var div =document.createElement('div');
     div.innerHTML='replaceWith处理';
-    elem.parentNode.relaceChild(div,elem);
+    elem.parentNode.replaceChild(div,elem);
 })
-{
-    replaceWith:function(){
-        var arg=arguments[0];
-        this.domManip(arguments,function(elem){
-            arg=this.parentNode;
-            jQuery.cleanData(getAll(this));
-            if(arg){
-                arg.replaceChild(elem,this);
-            }
-        });
-        return arg&&(arg.length||arg.nodeType)?this:this.remove();
-    }
-}
+
 
 </script>
 
