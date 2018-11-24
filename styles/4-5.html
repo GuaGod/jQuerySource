@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+
+	 <style>
+		  .test { margin: 4px; font-size:16px; font-weight:bolder; }
+		  .blue { color:blue; }
+		  .under { text-decoration:underline; }
+		  .highlight { background:yellow; }
+	 </style>
+	 <script src="http://code.jquery.com/jquery-latest.js"></script>
+	<title></title>
+</head>
+<body>
+
+<p class="under">慕课网</p>
+
+<button id="addClass">模拟jQuery的addClass("blue highlight under")方法</button>
+<button id="removeClass">模拟jQuery的removeClass("blue highlight under")方法</button>
+
+<div id="test" class="qwe"></div>
+
+<script type="text/javascript">
+	
+    var test = document.getElementById('test');
+
+    var p=$('p')[0];
+
+     $('#addClass').click(function(){
+         addClass(p,"blue hightlight under");
+     });
+
+     $('#removeClass').click(function(){
+         removeClass(p,"blue highlight under");
+     });
+   
+     function addClass(elem,value){
+        var classes,cur,clazz,j,finalValue
+             classes=(value||"").match(/\S+/g)||[];
+        
+
+        cur = elem.nodeType === 1 && (elem.className ?
+        (" " + elem.className + " ").replace(/[\t\r\n\f]/g
+           , " "):
+        " ");
+
+        if(cur) {
+            j = 0;
+            while((clazz = classes[j++])){
+                //检擦重复
+                if(cur.indexOf(" " + clazz + "") < 0){
+                    cur += clazz + " ";
+                }
+            }
+
+            finalValue = jQuery.trim(cur);
+
+            if(elem.className !== finalValue) {
+                elem.className = finalValue;
+            }
+        }
+     };
+
+     function removeClass(elem, value) {
+         var classes, cur, clazz, j, finalValue;
+         classes = (value || "").match(/\S+/g) || [];
+
+         cur = elem.nodeType === 1 && (elem.className ?
+         (" " + elem.className + " ").replace(/[\t\r\n\f]/g
+            , " ") :
+         " "
+         );
+
+         if(cur) {
+             j=0;
+             while ((clazz = classes[j++])){
+                 while (cur.indexOf(" " + clazz + " ") >= 0){
+                     cur = cur.replace(" " + clazz + " ", " ");
+                 }
+             }
+
+             finalValue = jQuery.trim(cur);
+
+             if(elem.className !== finalValue) {
+                 elem.className = finalValue;
+             }
+         }
+     }
+
+
+
+
+    
+
+
+</script>
+</body>
+</html>
