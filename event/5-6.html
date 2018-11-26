@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+  <style>
+p { background:yellow; font-weight:bold; cursor:pointer;
+padding:5px; }
+p.over { background: #ccc; }
+span { color:red; }
+</style>
+<script src="http://www.imooc.com/static/lib/jquery/1.9.1/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+
+
+<script>
+console.log(jQuery.guid++);
+console.log(jQuery.guid++);
+var obj={
+    add:function(elem, types, handler, data, selector) {
+      var handleObjIn, eventHandle, tmp,
+          events, t, handleObj,
+          special, handlers, type, namespaces, origType,
+          elemData = data_pri.get(elem);
+      if(!elemData){
+          return;
+      }
+      if(handler.handler){
+          handleObjIn = handler;
+          handler = handleObjIn.handler;
+          selector = handleObjIn.selector;
+      }
+      if(!handler.guid){
+          handler.guid = jQuery.guid++;
+      }
+      if(!(event = elemData.events)){
+          events = elemData.events = {};
+      }
+      if(!(eventHandle = elemData.handle)) {
+          eventHandle = elemData.handle = function(e){
+              return typeof jQuery !== strundefined && jQuery
+              .event.triggered !== e.type ?
+              jQuery.event.dispatch.apply(elem, arguments) :
+              undefined;
+          };
+      }
+      types = (types || "").match(rnotwhite) || [""];
+      t = types.length;
+      while(t--) {
+          tmp = rtypenamespace.exec(types[t]) || [];
+          type = origType = tmp[1];
+          namespaces = (tmp[2] || "").split(".").sort();
+          if(!type){
+              continue;
+          }
+          special = jQuery.event.special[type] || {};
+          type = (selector ? special.delegateType : special
+           .bindType) || type;
+          special = jQuery.event.special[type] || {};
+          handleObj = jQuery.extend({
+              type:type,
+              origType: origType,
+              data: data,
+              handler: handler,
+              guid: handler.guid,
+              selector: selector,
+              needsContext: selector && jQuery.expr.match
+              .needsContext.test(selector),
+              namespace:namespaces.join('.')
+          },handleObjIn);
+          if(!(handlers = events[type])){
+              handlers = events[type] = [];
+              handlers.delegateCount = 0;
+              if(!special.setup || special.setup.call(elem,
+              data, namespaces, eventHandle) === false) {
+                  if (elem.addEventListener) {
+                      elem.addEventListener(type, eventHandle,
+                      false);
+                  }
+              }
+          }
+          if (special.add) {
+              special.add.call(elem, handleObj);
+              if(!handleObj.handler.guid){
+                  handleObj.handler.guid = handler.guid;
+              }
+          }
+          if(selector) {
+              handlers.splice(handlers.delegateCount++, 0, handleObj)
+          }else{
+              handlers.push(handleObj);
+          }
+          jQuery.event.global[type] = true;
+      }
+    }
+}
+
+
+</script>
+ 
+</body>
+</html>
