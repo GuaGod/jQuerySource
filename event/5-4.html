@@ -14,118 +14,125 @@
 <p>3. 通过fix修正事件对象</p>
 <p>当然这里还没有涉及最重要的一点事件的委托过滤机制，考虑代码太复杂了，后面会有分析</p>
 <p id="aarontest" style="color:red">点击执行</p>
+<p id="liangjietest">zhixing</p>
 
 
 <script type="text/javascript">
 
+//存储绑定的事件
   var eventCache = {};
+
+//用$$符号，传入一个选择器，返回加工过的对象，this[0]，保存dom，this.selector保存选择器
   var $$ = ajQuery = function(selector) {
       return new ajQuery.fn.init(selector);
   }
+
   ajQuery.fn = ajQuery.prototype = {
-      name: 'aaron',
+      name: "arron",
       init: function(selector) {
           this.selector = selector;
           this[0] = document.querySelectorAll(selector)[0];
           return this;
       },
-      constructor: ajQuery
+      constructor:ajQuery
   }
   
+  //加工对象的构造函数的prototype指向ajQuery.fn，当对象没有属性时，会到ajQuery.fn内找
+  //原本指向Object
   ajQuery.fn.init.prototype = ajQuery.fn;
 
   ajQuery.event = {
-      add: function(elem, types, handler){
-          var eventHandle = function(e){
-              return ajQuery.event.dispatch.apply(elem, arguments);
+      add:function(elem, types, handler) {
+          var eventHandle = function(e) {
+              return ajQuery.event.dispatch.apply(elem,arguments);
           };
           eventCache['handler'] = handler;
-          if (elem.addEventListener){
+          if(elem.addEventListener) {
               elem.addEventListener(types, eventHandle, false);
           }
       },
-      dispatch: function(event){
-          event = ajQuery.event.fix(event);
-          eventCache['handler'].call(this,event);
-      }, 
-      handlers: function(event, handlers) {
+
+      dispatch:function(event) {
+        //修复event,因为ie的event和其他主流浏览器的event有区别
+        event = ajQuery.event.fix(event);
+        //this指向elem
+        eventCache['handler'].call(this, event);
+      },
+      //执行事件的句柄
+      handlers:function(event, handlers) {
           var handlerQueue = [];
           handlerQueue.push({
-              elem: this,
-              handlers: handlers.slice(delegateCount)
-          });
+              elem:this,
+              handlers:handlers.slice(delegateCount)
+          })
       },
       fix:function(event){
           var originalEvent = event;
+          //把不需要修复的属性列出来
           var props= "altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which button buttons clientX clientY offsetX offsetY pageX pageY screenX screenY toElement".split(" ");
-          var event = new jQuery.Event(originalEvent);
-          i = props.length;
-          while (i--) {
+          var event = new ajQuery.Event(originalEvent);
+          i=props.length;
+          //不需要修复的属性直接赋值给新对象就可以了
+          while(i--){
               prop = props[i];
               event[prop] = originalEvent[prop];
           }
-          return event
+          return event;
       }
   }
- function returnTrue() {
-    return true;
- }
-
- function returnFalse() {
-    return false;
- }
- 
- ajQuery.Event = function(src, props) {
-     if(src && src.type) {
-         this.originalEvent = src;
-         this.type = src.type;
-         this.isDefaultPrevented = src.defaultPrevented ||
-             src.defaultPrevented === undefined && 
-         src.returnValue === false ?
-            returnTrue :
-            returnFalse;
-     }else {
-         this.type = src;
-     }
-     this.timeStamp = src && src.timeStamp || jQuery.now();
-     this[jQuery.expando] = true;
- };
-
- ajQuery.Event.prototype = {
-     isDefaultPrevented: returnFalse,
-     isPropagationStopped: returnFalse,
-     isImmediatePropagationStopped: returnFalse,
-     preventDefault: function() {
-        var e = this.originalEvent;
-        this.isDefaultPrevented = returnTrue;
-        if (e && e.preventDefault) {
-            e.preventDefault();
-        }
-     },
-     stopPropagation: function() {
-         var e= this.originalEvent;
-         this.isDefaultPrevented = returnTrue;
-         if (e && e.stopPropagation) {
-             e.stopPropagation();
-         }
-     },
-     stopImmediatePropagation: function() {
-         var e = this.originalEvent;
-         this.isImmediatePropagationStopped = returnTrue;
-         if (e && e.stopImmediatePropagation){
-             e.stopImmediatePropagation();
-         }
-         this.stopPropagation();
-     } 
- };
-     ajQuery.fn.on=function(types, fn) {
-         ajQuery.event.add(this[0], types, fn);
-     }
   
-  $$('#aarontest').on('click',function(){
-      console.log('123123');
-  })
+  function returnTrue() {
+      return true;
+  }
 
+  function returnFalse() {
+      return false;
+  }
+
+  ajQuery.Event = function(src, props){
+      if(src && src.type) {
+          this.originalEvent = src;
+          this.type = src.type;
+          this.isDefaultPrevented = src.defaultPrevented ||
+               src.defaultPrevented === undefined &&
+          src.returnValue === false ?
+              returnTrue :
+              returnFalse;
+      } else {
+          this.type = src;  
+      }
+      this.timeStamp = src && src.timeStamp || jQuery.now();
+      this[jQuery.expando] = true;
+  };
+
+  ajQuery.Event.prototype = {
+      isDefaultPrevented: returnFalse,
+      isPropagationStopped: returnFalse,
+      isImmediatePropagationStopped: returnFalse,
+      preventDefault: function() {
+          var e = this.originalEvent;
+          this.isPropagationStopped = returnTrue;
+          if (e && e.stopPropagation) {
+              e.stopPropagation();
+          }
+      },
+      stopImmediatePropagation: function() {
+          var e = this.originalEvent;
+          this.isImmediatePropagationStopped =returnTrue;
+          if (e && e.stopImmediatePropagation) {
+              e.stopImmediatePropagation();
+          }
+          this.stopPropagation();
+      }
+  };
+
+  ajQuery.fn.on = function(types, fn){
+      ajQuery.event.add(this[0], types, fn);
+  }
+
+  $$('#aarontest').on('click',function(){
+      console.log("我被点击了！");
+  })
 
 </script>
 
