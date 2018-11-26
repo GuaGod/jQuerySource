@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://www.imooc.com/static/lib/jquery/1.9.1/jquery.js" type="text/javascript"></script>
+<title>委托设计</title>
+</head>
+<body>
+  <div id="outer">test
+      <div id="inner">qweqwe</div>
+  </div>
+    
+
+<script>
+  var inner = document.getElementById('inner');
+  var outer = document.getElementById('outer');
+  //先执行委托的
+  $(outer).click(function(){
+        console.log(2);
+    })
+    $(inner).click('outer',function(){
+        console.log(1);
+    })
+
+</script> 
+
+</body>
+</html>
