@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<title>模拟ajax的 script请求</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+
+<button id="test">模拟jQuery.ajax的script请求</button>
+
+<script type="text/javascript">
+ 
+    /**
+     * 模拟ajax的 script请求
+     * @param  {[type]} options [description]
+     * @return {[type]}         [description]
+     */
+    
+    function createAjax(options) {
+        //这步是干啥的。。。并没有url
+        if (typeof url === 'object') {
+            options = url;
+            url = undefined;
+        }
+        
+        options = options || {};
+        
+        //此函数给options补充默认的一些属性
+        var s = jQuery.ajaxSetup({}, options);
+
+        var deferred = jQuery.Deferred();
+        var completeDeferred = jQuery.Callbacks('once memory');
+
+        var jqXHR = {};
+
+        deferred.promise(jqXHR).complete = completeDeferred.add;
+
+        jqXHR.success = jqXHR.done;
+        jqXHR.error = jqXHR.fail;
+
+        for(i in {
+            success:1,
+            error: 1,
+            complete: 1
+        }){
+            jqXHR[i](s[i]);
+        }
+
+        function send(_, complete) {
+            var script = jQuery('<script>').prop({
+                async:true,
+                charset: s.scriptCharset,
+                src: s.url
+            }).on(
+                'load error',
+                callbakc = function(evt) {
+                    script.remove();
+                    callback = null;
+                    if (evt) {
+                        complete(evt.type === 'error' ? 404 :
+                                 200, evt.type);
+                    }
+                }
+            );
+            document.head.appendChild(script[0]);
+        }
+
+        function done(status, nativeStatusText, responses, headers) {
+            var isSuccess = status >= 200 && status <300 ||status ===304;
+            var success = jqXHR.success;
+            var error = jqXHR.error;
+            if (isSuccess) {
+                deferred.resolveWith(document, [success, jqXHR]);
+            }else {
+                deferred.rejectWith(document, [jqXHR, error]);
+            }
+        }
+
+        send({
+            Accept: "text/javascript, application/javascript, application.ecmascri"
+        }, done);
+
+        return jqXHR;
+    }
+      
+      function show(data) {
+          $('body').append('<li>'+ data +'</li>');
+      }
+
+      $('#test').click(function(){
+          var ajax = createAjax({
+              url: 'http://code.jquery.com/jquery-latest.js',
+              dataType: 'script',
+              complete: function() {
+                  show('局部事件complete');
+              },
+              error: function(){
+                  show('局部事件error请求失败时调用此函数');
+              },
+              success:function(){
+                  show('局部事件success');
+              }
+          })
+          ajax.done(function(){
+              show('deferred done')
+          }).fail(function(){
+              show('deferred fail')
+          }).always(function(){
+              show('defferred always')
+          })
+      })
+
+</script>
+</body>
+</html>
