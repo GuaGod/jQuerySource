@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<title>设计ajax库需要考虑的问题</title>
+</head>
+<body>
+
+
+<script type="text/javascript">
+
+//伪代码，仅供参考
+
+////////////////// //链式反馈done与fail // ////////////////// 
+$.ajax({
+	url: "script.php",
+	type: "POST",
+	data: {
+		id: menuId
+	},
+	dataType: "html"
+}).done(function(msg) {
+	$("#log").html(msg);
+}).fail(function(jqXHR, textStatus) {
+	alert("Request failed: " +
+		textStatus);
+});
+
+
+//////////////
+//分离异步与同步处理 //
+
+    $.ajax({
+        url: "script.php",
+        type: 'POST',
+        data: {
+            id:menuId
+        },
+        dataType: 'html'
+    }).done(function(msg){
+        $('#log').html(msg);
+    }).fail(function(jqXHR, textStatus){
+        alert('Request failed: '+textStatus);
+    });
+
+    var aajax = $.ajax({
+        url: 'script.php',
+        type: 'POST',
+        data: {
+            id: menuId
+        },
+        dataType: 'html'
+    }).fail(function(jqXHR, textStatus) {
+        alert('Request failed" '+textStatus);
+    });
+    
+    dosometing();
+
+    function ajax1(){
+        return $.get('1.htm');
+    }
+
+    function ajax2(){
+        return $.get('2.htm');
+    }
+
+    $.when(ajax1(), ajax2())
+          .then(function(){
+              //成功
+          })
+          .fail(function(){
+              //失败
+          });
+</script>
+</body>
+</html>
