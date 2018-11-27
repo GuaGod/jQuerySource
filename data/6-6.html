@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+     <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <title>模拟image的ajaxPrefilter与ajaxTransport处理</title>
+</head>
+<body>
+
+<button id="test">模拟image的ajaxPrefilter与ajaxTransport处理</button>
+<ul></ul>
+<script type="text/javascript">
+    
+    var $ul = $('ul');
+
+    function show(data) {
+        $ul.append('<li>' + data +'</li>')
+    }
+
+    $.ajaxPrefilter('image', function(options, originalOptions, jqXHR){
+        if (options.test) {
+            options.type = 'GET';
+        }
+        options.url = "http://img.mukewang.com/" + options.url
+    });
+
+    $.ajaxTransport('image', function(s) {
+        if (s.tpye === 'GET' && s.async) {
+            var image;
+            return {
+                send : function(_, callback) {
+                    image = new Image();
+                    function done(status) {
+                        if(image) {
+                            var statusText = (status == 200) ?
+                            "success" : "error",
+                            tmp = image;
+                            image = image.onreadystatechange =
+                                 image.onerror = image.onload =
+                                 null;
+                            callback(status, statusText, {
+                                image:tmp
+                            });
+                        }
+                    }
+                    image.onreadystatechange = image.onload =
+                    function() {
+                        done(200);
+                    };
+                    image.onerror = function() {
+                        done(404);
+                    };
+                    show(s.url);
+                    image.src = s.url;
+                },
+                abort: function() {
+                    if (image) {
+                        image = image.onreadystatechange = 
+                               image.onerror = image.onload =
+                               null;
+                    }
+                }
+            };
+        }
+    });
+
+    $('#test').click(function(){
+        var ajax = $.ajax({
+            test     : true,
+            url      : '547d5a45000156f406000338-590-330.jpg',
+            dataType : 'image',
+            type     : 'POST',
+            data: {
+                foo:['bar1', 'bar2']
+            },
+            context: document.body,
+            beforeSend: function(xhr) {
+                xhr.overrideMimeType("text/plain; charset=x-user-defined");
+                show('局部事件beforeSend');
+            },
+            complete: function() {
+                show('局部事件complete');
+            },
+            error: function() {
+                show('局部事件error');
+            },
+            success: function() {
+                show('局部事件success')
+            }
+        })
+
+        ajax.done(function() {
+            show('done')
+        }).fail(function() {
+            show('fail')
+        }).always(function() {
+            show('always ')
+        })
+    })
+ 
+</script>
+</body>
+</html>
