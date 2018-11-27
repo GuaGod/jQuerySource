@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://www.imooc.com/static/lib/jquery/1.9.1/jquery.js" type="text/javascript"></script>
+<title>自定义事件的实现</title>
+</head>
+<body>
+
+<div id="aaron">
+   <div id='test'>
+       	<ul>
+   			<p>trigger触发</p>
+   		</ul>
+   </div>
+</div>
+
+<div id="show"></div>
+
+<script type="text/javascript">
+
+var aaron = $('#aaron');
+
+$("body").click(function(event,data){
+	show('body '+data)
+})
+
+$(window).click(function(event,data){
+	show('window '+data)
+})
+
+aaron.on('click','p', function() {
+	show('p')
+});
+
+aaron.on('click', function(event,data) {
+	show('aaron '+data)
+});
+
+aaron.trigger('click',2222);
+
+function show(data){
+  $("#show").append('<li>'+ data +'</li>')
+}
+
+</script> 
+
+</body>
+</html>
