@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	 <script src="http://code.jquery.com/jquery-latest.js"></script>
+	<title></title>
+</head>
+<body>
+
+script的预处理结果
+<ul></ul>
+
+<script type="text/javascript">
+    
+    var $ul = $('ul');
+
+    function show(data) {
+        $ul.append('<li>' +data+ '</li>')
+    }
+    
+
+    //第一个参数是数据类型，第二个函数是回调
+    jQuery.ajaxPrefilter('script', function(s) {
+        show('s.cache' + s.cache);
+        show('s.type' + s.type);
+    })
+
+    var ajax = $.ajax({
+        url:'http://code.jquery.com/jquery-latest.js',
+        dataType:'script',
+        beforeSend:function(jqXHR, s){
+            show('s.url:' + s.url);
+        }
+    })
+
+
+</script>
+</body>
+</html>
