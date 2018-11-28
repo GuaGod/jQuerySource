@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<title>类型转化器</title>
+     <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+
+
+<button id="test1">json类型</button>
+<button id="test2">xml类型</button>
+<ul></ul>
+<script type="text/javascript">
+    
+    var ajax = $.ajax({
+        crossDomain: true,
+        url: 'http://192.168.1.113:8080/github/jQuery/jsonp.php',
+        data: {
+            'action' : 'aaron'
+        },
+        dataType: 'xml',
+        jsonp:'callback',
+        beforeSend: function(xhr) {
+            xhr.overrideMimeType('text/plain; charset=x-user-defined');
+            console.log('局部事件beforeSend');
+        },
+        complete: function(){
+            console.log('局部事件complete');
+        },
+        error:function() {
+            console.log('局部事件error');
+        },
+        success: function(data) {
+            console.log('局部事件success',data);
+        }
+    })
+    
+    var data = '{"status":1,"info":"OK"}';
+
+    var xml = "<root><people><name>慕课网</name><address>北京</address></people></root>";
+
+    function ajaxConvertJSON(data) {
+        var parseJSON = function (data) {
+            return JSON.parse(data + "");
+        };
+        return parseJSON(data)
+    }
+
+    function ajaxConvertXML(data) {
+        var xml, tmp;
+        try {
+            tmp = new DOMParser();
+            xml = tmp.parseFromString(data, 'text/xml');
+        } catch(e) {
+            xml = undefined;
+        }
+        if(!xml || xml.getElementsByTagName('parsererror').length) {
+            jQuery.error('Invalid XML: '+data);
+        }
+        return xml;
+    }
+
+    var $ul = $('ul');
+
+    function show(data) {
+        $ul.append('<li>'+data+'</li>');
+    }
+
+    $('#test1').click(function(){
+        show(ajaxConvertJSON(data));
+    })
+
+    $('#test2').click(function(){
+        show(ajaxConvertXML(xml))
+    })
+
+
+</script>
+</body>
+</html>
