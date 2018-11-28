@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    $.ajax({
+        crossDomain  :true,
+        url: '',
+        type:'GET',
+        data:{
+            'action':'aaron'
+        },
+        dataType:'json',
+        jsonp:'callback',
+        jsonpCallback:'flightHandler',
+        success:function(json){
+            console.log(json);
+        }
+    })
+
+    function flightHandler(data){
+        console.log(data);
+    }
+
+    function createJsonp(url, complete) {
+        var script = jQuery('<script>').prop({
+            async:true,
+            src:''
+        }).on(
+            'load error',
+            callback = function(evt) {
+                script.remove();
+                callback = null;
+            }
+        );
+        document.head.appendChild(script[0]);
+    }
+    createJsonp();
+    </script>
+</body>
+</html>
