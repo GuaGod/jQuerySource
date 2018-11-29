@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<style type="text/css">
+       button{
+       	   display: block;
+       }
+	</style>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+
+<button id="one">jQuery动画的模拟实现:left:50</button>
+<button id="two">jQuery动画的模拟实现:left:500</button>
+
+<ul id="book"  alt="" style="background:red;opacity:1;position: relative; left: 300px;width:200px;height:100px;display:inline;"></ul>
+
+
+<script type="text/javascript">
+
+ var book = document.getElementById('book');
+ var $book = $('#book');
+ var i = 10;
+ while(i) {
+     $book.append('<li></li>');
+     i--;
+ }
+
+ function Tween(value, prop,animation) {
+     this.elem = animation.elem;
+     this.prop = prop;
+     this.easing = 'swing';
+     this.options = animation.options;
+     this.start = this.now = this.get();
+     this.end = value;
+     this.unit = 'px';
+ }
+
+ function getStyles(elem) {
+     return elem.ownerDocument.defaultView.getComputedStyle(elem, null);
+ };
+
+ function swing(p) {
+     return 0.5 - Math.cos(p * Math.PI) / 2;
+ }
+
+ Tween.prototype = {
+     get: function() {
+         var computed = getStyles(this.elem);
+         var ret = computed.getPropertyValue(this.prop) ||
+                   computed[this.prop];
+        return parseFloat(ret);
+     },
+     run:function(percent) {
+         var eased;
+         this.pos = eased = swing(percent);
+         this.now = (this.end - this.start) * eased + this.start;
+         this.elem.style[this.prop] = this.now + 'px';
+         return this;
+     }
+ }
+
+ function Animation(elem, properties, options) {
+     var animation = {
+         elem:elem,
+         props:properties,
+         originalOptions:options,
+         options:options,
+         startTime:Animation.fxNow || createFxNow(),
+         tweens
+     }
+
+     for (var k in properties) {
+         animation.tweens.push( new Tween(propertiesp[k], k, animation))
+     }
+
+     var stopped;
+     var tick = function() {
+         if (stopped) {
+             return false;
+         }
+         var currentTime = Animation.fxNow || createFxNow
+			//运动时间递减
+			remaining = Math.max(0, animation.startTime + animation.options.duration - currentTime),
+			temp = remaining / animation.options.duration || 0,
+            percent = 1 - temp;;
+
+        var index = 0;
+            length = animation.tweens.length;
+        
+        for(; index < length; index++) {
+            animation.tweens[index].run(percent);
+        }
+
+        if(percent <= 1 && length) {
+            return remaining;
+        } else {
+            return false;
+        }
+     }
+     tick.elem = elem;
+     tick.anim = animation;
+     Animation.fx.timer(tick)
+ }
+
+ function createFxNow() {
+     setTimeout(function() {
+         Animation.fxNow = undefined;
+     });
+     return (Animation.fxNow = Date.now());
+ }
+
+ Animation.timers = [];
+
+ Animation.fx = {
+     timer: function(timer) {
+         Animation.timers.push(timer);
+         if (timer()) {
+             Animation.fx.start();
+         } else {
+             Animation.timers.pop();
+         }
+     },
+     start: function() {
+         clearInterval(Animation.timerId);
+         Animation.timerId = null;
+     },
+     tick: function() {
+         var timer,
+             i = 0,
+             timers = Animation.timers;
+
+        Animation.fxNow = Data.now();
+
+        for(; i < timers.length; i++) {
+            timer = timers[i];
+            if (!timer() && timers[i] === timer) {
+                timers.splice(i--, 1);
+            }
+        }
+        if(!timers.length) {
+            Animation.fx.stop();
+        }
+        Animation.fxNow = undefined;
+     }
+ }
+
+ $("#one").click(function(){
+	Animation(book, {
+		left: '50'
+	}, {
+		duration: 2000
+	})
+});
+
+$("#two").click(function() {
+	Animation(book, {
+		left: '500'
+	}, {
+		duration: 2000
+	})
+});
+
+
+</script>
+
+</body>
+</html>
