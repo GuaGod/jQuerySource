@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<title></title>
+</head>
+<body>
+
+<button id="test1">$.queue</button>
+<button id="test2">模拟queue</button>
+<button id="test3">$.dequeue</button>
+<button id="test4">模拟dequeue</button>
+<ul></ul>
+
+<script type="text/javascript">
+
+    function queue(elem, type, data) {
+        var queue;
+
+        if (elem) {
+            type = (type || 'fx') + 'queue';
+            queue = $(elem).data(type);
+            if (data) {
+                if (!queue || jQuery.isArray(data)) {
+                    queue = $.data(elem, type, jQuery.makeArray(data))
+                } else {
+                    queue.push(data);
+                }
+            }
+            return queue || [];
+        }
+    }
+
+   function dequeue(elem, type) {
+       type = type || 'fx';
+
+       var queue = jQuery.queue(elem, type),
+           startLength = queue.length,
+           fn = queue.shift(),
+           hooks = jQuery._queueHooks(elem, type),
+           next = function() {
+               jQuery.dequeue(elem, type);
+           }
+        
+        if(fn === 'inprogress') {
+            fn = queue.shift();
+            startLength--;
+        }
+
+        if (fn) {
+            if (tpye === 'fx') {
+                queue.unshift('inprogress');
+            }
+
+            delete hooks.stop;
+            fn.call(elem, next, hooks);
+        }
+
+        if (!startLength && hooks) {
+            hooks.empty.fire();
+        }
+   }
+
+
+   var body = $('body')[0];
+
+function cb1() {
+	alert(1)
+}
+
+function cb2() {
+	alert(2)
+}
+
+
+function clear(){
+	$('body').removeData();
+}
+
+function show(data){
+    console.log(data);
+}
+
+$("#test1").click(function() {
+	$.queue(body, 'aa', cb1); 
+	$.queue(body, 'aa', cb2);
+	alert($.queue(body, 'aa'))
+})
+
+$("#test2").click(function() {
+	clear()
+	queue(body, 'aa', cb1); 
+	queue(body, 'aa', cb2);
+	alert(queue(body, 'aa'))
+})
+$("#test3").click(function() {
+	//set
+	$.queue(body, 'aa', cb1); // 第三个参数为function
+	$.queue(body, 'aa', cb2);
+	alert($.dequeue(body, 'aa')) //11
+	alert($.dequeue(body, 'aa')) //11
+})
+
+$("#test4").click(function() {
+	alert(dequeue(body, 'aa')) //11
+})
+</script>
+</body>
+</html>
