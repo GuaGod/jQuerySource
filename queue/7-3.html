@@ -11,101 +11,88 @@
 <script>
 	(function($) {
         window.$ = $;
-        console.log($);
     })(function() {
+       
+       var rquickExpr = /^(?:#([\w-]*))$/;
 
-        var rquickExpr = /^(?:#([\w-]*))$/;
+       function aQuery(selector) {
+           return new aQuery.fn.init(selector);
+       }
 
-        function aQuery(selector) {
-            return new aQuery.fn.init(selector);
-        }
+       var animation = function() {
+           var self = {};
+           var Queue = [];
+           var fireing = false;
+           var first = true;
 
-    var animation = function() {
-        var self = {};
-        var Queue = [];
-        var fireing = false;
-        var first = true;
+           var getStyle = function(obj, attr) {
+               return obj.currentStyle ? obj.currentStyle[attr] :
+                      getComputedStyle(obj, false)[attr];
+           }
 
-        var getStyle = function(obj, attr) {
-            return obj.currentStyle ? obj.currentStyle[attr] :
-                   getComputedStyle(obj, fasle)[attr];
-        }
+           var makeAnim = function(element, options, func) {
+               var width = options.width;
+               element.style.webkitTransitionDuration = '2000ms';
+               element.style.webkitTransform = 'translate3d(' + 
+               width + 'px,0,0)';
+           }
 
-        var makeAnim = function(element, options, func) {
-            var width = options.width;
+           element.addEventListener('webkitTransitionEnd', function() {
+               func();
+           });
+       }
 
-            element.style.webkitTransitionDuration = '2000ms';
-            element.style.webkitTransform = 'translate3d(' + width +
-            'px,0,0)';
+       var _fire = function() {
+           if(!fireing) {
+               var onceRun = Queue.shift();
 
-            element.addEventListener('webkitTransitionEnd',function() {
-                func()
-            });
-        }
+               if (onceRun) {
+                   fireing = true;
+                   if (onceRun) {
+                       fireing = true;
+                       onceRun(function() {
+                           fireing = false;
+                           _fire();
+                       });
+                   } else {
+                       fireing = true;
+                   }
+               }
+           }
+           return self = {
+               add:function(element, options) {
+                   Queue.push(function(func) {
+                       makeAnim(element, options, func);
+                   });
 
-        var _fire = function() {
-            if(!fireing) {
-                var onceRun = Queue.shift();
-                if (onceRun) {
-                    fireing = true;
-                    onceRun(function() {
-                        fireing = false;
-                        _fire();
-                    });
-                } else {
-                    fireing = true;
-                }
-            }
-        }
+                   if(first && Queue.length){
+                       first = false;
+                       self.fire();
+                   }
+               },
+               fire: function() {
+                   _fire();
+               }
+           }
+       }();          
 
-        return self = {
-            add: function(element, options) {
-                Queue.push(function(func) {
-                    makeAnim(element, options, func);
-                });
+       aQuery.fn = aQuery.prototype = {
+           run: function(options) {
+               animation.add(this.element, options);
+               return this;
+           }
+       }    
 
-                if (first && Queue.length) {
-                    first = false;
-                    self.fire();
-                }
-            },
-            fire: function() {
-                _fire();
-            }
-        }
-    }();
+       var init = aQuery.fn.init = function(selector) {
+           var match = rquickExpr.exec(selector);
+           var element = document.getElementById(match[1]);
+           this.element = element;
+           return this;
+       }
 
-    aQuery.fn = aQuery.prototype = {
-        run: function(options) {
-            animation.add(this.element, options);
-            return this;
-        }
-    }
-
-    var init = aQuery.fn.init = function(selector) {
-        var match = rquickExpr.exec(selector);
-        var element = document.getElementById(match[1])
-        this.element = element;
-        return this;
-    }
-
-    init.prototype = aQuery.fn;
-    console.log(aQuery);
-    return aQuery;
+       init.prototype = aQuery.fn;
+       return aQuery; 
     }());
-
-    var oDiv = document.getElementById('div1');
-    console.log($(oDiv));
-    oDiv.onclick = function() {
-        $('#div1').run({
-        'width': '500'
-    }).run({
-        'width': '300'
-    }).run({
-        'width': '1000'
-    });
-    } 
-
 </script>
 </body>
 </html>
