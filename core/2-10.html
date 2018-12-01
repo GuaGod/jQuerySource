@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://img.mukewang.com/down/540812440001e40e00000000.js" type="text/javascript"></script>
+<title></title>
+</head>
+<body>
+    
+
+
+<script type="text/javascript">
+
+/*
+function each(obj, callback) {
+    var i = 0;
+    var value;
+    var length = obj.length;
+    for(; i < length; i++) {
+        callback(obj[i]);
+    }
+}
+
+var arr = ['a', 'b', 'c'];
+each(arr, function(name){
+    console.log(name);
+})
+
+function each(obj, callback, context, arg) {
+    var i = 0;
+    var value;
+    var length = obj.length;
+    for(; i < length; i++) {
+        callback.call(context || null, obj[i], arg);
+    }
+}
+
+var arr = ['a', 'b', 'c'];
+each(arr, function(name, arg) {
+    console.log(name, arg, this);
+}, this, 'aaa')
+
+function cons() {
+    console.log(this);
+}
+cons.call(null);
+*/
+/*
+function test(){
+    console.log(this);
+}
+var obj = {
+    name : "liangjie"
+}
+var result = test.bind(obj);
+result();
+*/
+
+function each(obj, callback, context, arg) {
+    var i = 0;
+    var value;
+    var length = obj.length;
+    for(; i < length; i++) {
+        callback.call(context || null, obj[i], arg);
+    }
+}
+
+var arr = ['a', 'b', 'c'];
+each(arr, function(name, arg) {
+    $('body').append('<li>' + name + '</li>')
+}, this, 'aaa')
+
+</script>
+</body>
+</html>
