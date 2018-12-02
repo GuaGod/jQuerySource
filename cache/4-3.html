@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<title></title>
+</head>
+<body>
+
+<div id="aaron">缓存接口测试</div></br>
+
+<script type="text/javascript">
+
+var ele1 = $('#aaron');                      
+var ele2 = $('#aaron');
+
+ele1.data('a', 1111);
+ele2.data('a', 2222);
+
+console.log(ele1.data('a'));
+console.log(ele2.data('a'));
+console.log('-------------');
+
+$.data(ele1, 'b', '1111');
+$.data(ele2, 'b', '2222');
+console.log($.data(ele1, 'b'));
+console.log($.data(ele2, 'b'));
+
+</script>
+
+</body>
+</html>
