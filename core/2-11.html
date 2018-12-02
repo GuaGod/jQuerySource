@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://img.mukewang.com/down/540812440001e40e00000000.js" type="text/javascript"></script>
+<title></title>
+</head>
+<body>
+    
+<script type="text/javascript">
+
+jQuery.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(i, name) {
+    $('body').append(name.toLowerCase()+'</br>')
+});
+
+var obj = {
+    each: function(callback, args) {
+        return jQuery.each(this, callback, args);
+    },
+    each: function(obj, callback, args) {
+        var value,
+            i = 0,
+            length = obj.length,
+            isArray = isArraylike(obj);
+        if (args) {
+            if (isArray) {
+                for(; i < length; i++) {
+                    value = callback.apply(obj[i], args);
+                    if (value === false) {
+                        break;
+                    }
+                }
+            } else {
+                for (i in obj) {
+                    value = callback.apply(obj[i], args);
+                    if (value === false) {
+                        break;
+                    }
+                }
+            }
+        }
+    },
+    dequeue: function(type) {
+        return this.each(function() {
+            jQuery.dequeue(this, type);
+        })
+    }
+}
+
+</script>
+</body>
+</html>
