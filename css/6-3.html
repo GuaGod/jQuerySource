@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+    
+        <button id="test1">attributes获取class</button>
+        <button id="test2">attributes检测className</button>
+        <button id="test3">getElementById检测</button>
+        <button id="test4">getElementsByTagName检测</button>
+        <button id="test5">getElementsByClassName检测</button>
+    <script>
+        function assert(fn) {
+            var div = document.createElement('div');
+            try {
+                return !!fn(div);
+            } catch (e) {
+                return false;
+            } finally {
+                if (div.parentNode) {
+                    div.parentNode.removeChild(div);
+                }
+                div = null;
+            }
+        }
+
+        $("#test1").click(function() {
+            assert(function(div) {
+                div.className = "i";
+                console.log(div.getAttribute('class'));
+            })
+        })
+
+        $("#test2").click(function() {
+            assert(function(div) {
+                div.className = "i";
+                console.log(div.getAttribute('className'));
+            })
+        })
+
+        $("#test3").click(function() {
+            assert(function(div) {
+                document.body.appendChild(div).id = 'liangjie';
+                console.log(!document.getElementsByName('liangjie').length);
+            })
+        })
+        
+        $("#test4").click(function() {
+            assert(function(div) {
+                div.appendChild(document.createComment(""));
+                console.log(div.getElementsByTagName("*").length);
+            })
+        })
+
+        function byTagName(tag, context) {
+            var elem,
+                tmp = [],
+                i = 0,
+                results = context.getElementsByTagName(tag);
+           if (tag === '*') {
+               while((elem = results[i++])) {
+                   if(elem.nodeType === 1) {
+                       tmp.push(elem);
+                   }
+               }
+               return tmp;
+           }
+           return results;
+        }
+
+        function getClassNames(tagName, classStr) {
+            var nodes = document.getElementsByTagName(tagName),
+                ret = [];
+            for (i = 0; i < nodes.length; i++) {
+                if (hasClass(nodes[i], classStr)) {
+                    ret.push(nodes[i]);
+                }
+            }
+            return ret;
+        }
+
+        function hasClass(tagStr, classStr) {
+            var arr = tagStr.className.split(/\s+/);
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] == classStr) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>
