@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+       setTimeout(function() {
+           console.log(1);
+       },1000)
+
+       setTimeout(function() {
+           console.log(1);
+       },1000)
+
+       var taskNum = function() {
+           var num = 2;
+           return function() {
+               if(num === 1) {
+                   console.log('任务完成');
+               }
+               num--;
+           }
+       }();
+
+       function task1(name, fn) {
+           setTimeout(function() {
+               fn(name);
+           }, 1000)
+       }
+
+       function task2(name, fn) {
+           setTimeout(function() {
+               fn(name);
+           }, 1000)
+       }*/
+
+       function task3(name) {
+           var dtd = $.Deferred();
+           setTimeout(function() {
+               console.log('task3完成');
+               dtd.resolve(name);
+           }, 500)
+           return dtd;
+       }
+
+       function task4(name) {
+           var dtd = $.Deferred();
+           setTimeout(function() {
+               console.log('task4完成');
+               dtd.resolve(name);
+           }, 1000);
+           return dtd;
+       }
+
+       $.when(taks3('task1'), task4('task3')).done(
+           function() {
+               console.log('when完成');
+           })
+       )
+    
+    </script>
+</body>
+</html>
