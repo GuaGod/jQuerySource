@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+       jQuery.extend.fn({
+           data: function(key, value) {
+               return access(this, function(value) {
+
+               }, null, value, arguments.length > 1, null, true);
+           }
+       })
+      
+      this.each(function() {
+          var data = data_user.get(this, camelKey);
+          data_user.set(this, camelKey, value);
+      })
+
+      get:function(owner, key) {
+          var cache = this.cache[this.key(owner)];
+          return key === undefined ?
+                 cache : cache[key];
+      }
+
+      set: function(owner, data, value) {
+          var prop,
+              unlock = this.key(owner),
+              cache = this.cache[unlock];
+          cache[data] = value;
+          return cache;      
+    }
+
+     var body1 = $('body');
+     var body2 = $('body');
+
+     body1.data('bar', {
+         myType: '慕课网一',
+         count: 10
+     });
+
+     body.data('bar', {
+         myType:'慕课网',
+         count:20
+     })
+    </script>
+</body>
+</html>
