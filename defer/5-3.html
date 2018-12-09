@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+        <button id="aaron1">例一:基本用法</button>
+        <button id="aaron2">例二:过滤器</button>
+        <button id="aaron3">例三:promise方法</button>
+        <script>
+          $("#aaron1").on('click', function() {
+              var dtd = $.Deferred();
+              dtd.done(function() {
+                  console.log("成功");
+              })
+
+              setTimeout(function() {
+                  dtd.resolve();
+              }, 2000);
+          });
+
+          var filterResolve = function() {
+              var defer = $.Deferred(),
+                  filtered = defer.then(function(value) {
+                      return value * 2;
+                  });
+              defer.resolve(5);
+              filtered.done(function(value) {
+                  console.log(value);
+              });
+          };
+          $('#aaron2').on('click', filterResolve);
+
+          $('#aaron3').on('click', function() {
+              var obj = {
+                  hello: function(name) {
+                      console.log('hello',name);
+                  }
+              },
+              defer = $.Deferred();
+
+              defer.promise(obj);
+              defer.resolve('慕课网');
+              obj.done(function(name) {
+                  obj.hello(name);
+              }).hello('Aaron');
+          })
+        </script>
+</body>
+</html>
