@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <script>
+       var init = function(selector, context, rootjQuery) {
+           var match, elem;
+           if (!selector) {
+               return this;
+           }
+
+           if (typeof selector === 'string') {
+
+           } else if (selector.nodeType) {
+
+           } else if (jQuery.isFunction(selector)) {
+               return rootjQuery.ready(selector);
+           }
+
+           if (selector.selector !== undefined) {
+               this.selector = selector.selector;
+               this.context = selector.context;
+           }
+
+           return jQuery.makeArray(selector, this);
+       }
+    </script>
+</body>
+</html>
