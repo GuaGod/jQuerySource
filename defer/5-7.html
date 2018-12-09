@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+       jQuery.each(tuples, function(i, tuple) {
+           var fn = jQuery.isFunction(fns[i]) && fns[i];
+           deferred[tuple[1]](function() {
+               var returned = fn && fn.apply(this, arguments);
+               if(returned && jQuery.isFunction(returned.promise)) {
+                   returned.promise()
+                   .done(newDefer.resolve)
+                   .fail(newDefer,reject)
+                   .progress(newDefer.notify)
+               } else {
+                   newDefer[tuple[0] + 'With'](this === promise ?
+                   newDefer.promise() : this, fn ? [returned] : arguments);
+               }
+           });
+       })
+
+       var dfd = $.Deferred();
+       dfd.then(function(preVale) {
+           return 2 * preVale;
+       }).then(function(preVale) {
+           return 3 * preVale;
+       }).then(function(preVale) {
+           console.log(preVale);
+       })
+
+       dfd.resolve(2);
+    </script>
+</body>
+</html>
