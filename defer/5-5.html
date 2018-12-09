@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+
+<body>
+    <button>点击</button>
+    <script>
+       var defer = $.Deferred();
+       defer.resolve(5);
+       defer.done(function(value) {})
+       var filtered = defer.then(function(value) {
+           return value * 2;
+       });
+       filtered.done(function(value) {});
+
+       var filterResolve = function() {
+           var defer = $.Deferred();
+           defer.resolve(5);
+           defer.done(function(value) {
+               console.log(value);
+           });
+
+           var filtered = defer.then(function(value) {
+               return value * 2;
+           });
+
+           filtered.done(function(value){
+               console.log('12312');
+           })
+
+       }
+
+       $('button').click(function() {
+           filterResolve();
+       })
+    </script>
+</body>
+</html>
