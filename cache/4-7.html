@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="test"></div>
+    <script>
+      window.cache = {
+
+      };
+     
+     var test = document.getElementById('test');
+      var LQuery = function (dom) {
+          this.dom = dom;
+          this.cacheId;
+      }
+
+      LQuery.prototype.data = function(key, value) {
+          if(key !== undefined && value !== undefined) {
+              this.dataSet(key,value);
+          } else {
+              var value = this.dataGet(key);
+              return value;
+          } 
+      }
+
+      LQuery.prototype.dataSet = function(key, value) {
+          if(!this.cacheId){
+           var time = new Date();
+           this.cacheId = time;
+           cache[time] = {};
+          }
+
+          cache[this.cacheId][key] = value;
+          
+      }
+
+      LQuery.prototype.dataGet = function(key) {
+          if(key === undefined) {
+            var tmp = cache[this.cacheId] === undefined ?
+                      cache[this.cacheId] : 
+                      cache[this.cacheId];
+          } else {
+          var tmp = cache[this.cacheId] === undefined ?
+                    cache[this.cacheId] : 
+                    cache[this.cacheId][key];
+          }
+          return tmp;    
+      }
+      var liangjie = new LQuery(test);
+      liangjie.data('aa',123);
+      liangjie.data('qwe',4532);
+      console.log(liangjie.data());
+    </script>
+</body>
+</html>
