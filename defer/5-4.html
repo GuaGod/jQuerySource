@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var Deferred = function(func) {
+            var tuples = [
+                ["resolve", "done", jQuery.Callbacks('once memory'), 'resolved'],
+                ['reject', 'fail', jQuery.Callbacks('once memory', 'rejected')],
+                ['notify', 'progress', jQuery.Callbacks('memory')]
+            ],
+            state = 'pending',
+            promise = {
+                state: function() {},
+                always: function() {},
+                then: function() {},
+                promise: function(obj) {}
+            },
+            deferred = {};
+            promise.pipe = promise.then;
+            jQuery.each(tuples, function(i, tuple) {
+                deferred[tuple[0]] = function() {
+                    deferred[tuple[0] + 'With'](this === 
+                    deferred ? promise : this, arguments);
+                    return this;
+                };
+                deferred[tuple[0] + 'With'] = list.fireWith;
+            });
+
+            promise.promise(deferred);
+
+            if( func ) {
+                func.call(deferred, deferred);
+            }
+            return deferred;
+        }
+
+        var when = function(subordinate) {
+            var i = 0,
+                resolveValues = slice.call(arguments),
+                length = resolveValues.length,
+                deferred = remaining === 1 ? subordinate :
+                jQuery.Deferred(),
+                updateFunc = function(i, contexts, values) {
+                    return function(value) {};
+                },
+                progressValues, progressContexts, resolveContexts;
+            if (length > 1) {
+                progressValues = new Array(length);
+                progressContexts = new Array(length);
+                resolveContexts = new Array(length);
+                for (; i < length; i++) {
+                    if (resolveValues[i] && jQuery.isFunction(resolveValues[i].promise)) {
+                        resolveValues[i].promise()
+                        .done(updateFunc(i, resolveContexts, resolveValues))
+                        .fail(deferred.reject)
+                        .progress(updateFunc(i,
+                          progressContexts, progressValue));
+                    } else {
+                        --remaining;
+                    }
+                }
+            }
+            return deferred.promise();
+        }
+    </script>
+</body>
+</html>
