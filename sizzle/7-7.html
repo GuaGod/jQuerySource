@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<title></title>
+</head>
+<body>
+
+
+<button id="test1">过滤器原理</button>
+
+<div id="text">
+  <p>
+     <input type="text" />
+  </p>
+  <div class="Aaron">
+     <input type="checkbox" name="readme" />
+     <input type="checkbox" name="ttt" />
+     <input type="checkbox" name="aaa" />
+     <p>Sizzle</p>
+  </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+  var seed = document.querySelectorAll('input');
+
+  var selector = 'div > div.Aaron [name=ttt]';
+
+  function addCombinatora(elems) {
+      var elem;
+      while ((elem = elems['parentNode'])) {
+          if (elem.nodeType === 1) {
+              return elem;
+          }
+      }
+  };
+
+  $('#test1').click(function() {
+      for(var i = 0; i < seed.length; i++) {
+          var ele = seed[i];
+          var name = ele.getAttribute('name');
+          if (name === 'ttt') {
+              ele = addCombinatora(ele);
+              console.log(i);
+              console.log(ele);
+              if (ele.getAttribute('class') === 'Aaron') {
+                  $('body').append('success');
+              }
+          }
+      }
+  })
+
+
+</script> 
+
+</body>
+</html>
