@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<title></title>
+</head>
+<body>
+
+多重选择器,逗号分隔处理
+<button id="test1">通过split分组</button>
+<button id="test2">sizzle的分组方式</button>
+
+<div id="text">
+  <p>
+     <input type="text" />
+  </p>
+  <div class="aaron">
+     <input type="checkbox" name="readme" />
+     <input type="checkbox" name="ttt" />
+     <input type="checkbox" name="aaa" />
+     <p>慕课网</p>
+  </div>
+</div>
+
+<div>
+   <input type="checkbox" name="readme" />
+   <input type="checkbox" name="ttt" />
+   <input type="checkbox" name="aaa" />
+   <p>Aaron</p>
+</div>
+
+
+<script type="text/javascript">
+   var selector = 'div,input';
+
+   $("#test1").click(function() {
+       var soFar = selector.split(',');
+       console.log(soFar[0]);
+       console.log(soFar[1]);
+   })
+   
+   $("#test2").click(function() {
+      
+      var rcomma = /^[\x20\t\r\n\f]*,[\x20\t\r\n\f]*/;
+      
+      var TAG = /^((?:\\.|[\w*-]|[^\x00-\xa0])+)/;
+
+
+       var soFar = selector;
+       var match;
+       var matched;
+       var tokens;
+       var groups = [];
+
+       while(soFar) {
+           if (!matched || (match = rcomma.exec(soFar))) {
+               if (match) {
+                   soFar = soFar.slice(match[0].length) || soFar;
+               }
+               groups.push((tokens = []));
+           }
+
+           matched = false;
+
+           match = TAG.exec(soFar);
+           matched = match.shift();
+           tokens.push({
+               value  : matched,
+               type   : 'TAG',
+               matched : match
+           });
+           soFar = soFar.slice(matched.length);
+
+           if(!matched) {
+               break;
+           }
+       }
+       console.log(groups);
+   })
+
+
+</script> 
+
+</body>
+</html>
