@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<title></title>
+</head>
+<body>
+
+
+<button id="test1">超级匹配器,点击选中checked</button>
+
+<div id="text">
+  <div class="Aaron">
+     <input type="checkbox" name="readme" />
+     <input type="checkbox" name="ttt" />
+     <input type="checkbox" name="aaa" />
+     <p>Sizzle</p>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  $("#test1").click(function() {
+      compile();
+  })
+
+  function compile() {
+      var seed = document.querySelectorAll('input');
+      var selector = 'Aaron [name=ttt]';
+      var elementMatchers = [];
+      var match = [{
+          matches: ['div'],
+          type: 'TAG',
+          value: 'Aaron'
+      }, {
+          type : ' ',
+          value: ' '
+      }, {
+          matches: ['name', '=', 'ttt'],
+          type: 'ATTR',
+          value: '[name=ttt]'
+      }]
+
+      elementMatchers.push(matcherFromTokens(match));
+      
+
+      //超级匹配器
+      var cached = matcherFromGroupMatchers(elementMatchers);
+      results = cached(seed);
+
+      results[0].checked = 'checked'
+  }
+ 
+  function matcherFromTokens(tokens) {
+      var len = tokens.length;
+  }
+
+
+
+
+</script> 
+
+</body>
+</html>
