@@ -21,41 +21,113 @@
 
 
 <script type="text/javascript">
-  $("#test1").click(function() {
-      compile();
-  })
+   
+   var filter = {
+       ATTR: function(name, operator, check) {
+           return function(elem) {
+               var attr = elem.getAttribute(name);
+               if (operator === '=') {
+                   if(attr === check) {
+                       return true;
+                   }
+               }
+               return false;
+           }
+       },
+       TAG: function(nodeNameSelector) {
+           return function(elem) {
+               //和先前传入的nodeNameSelector进行比较
+               return elem.nodeName && elem.nodeName.toLowerCase() 
+                      === nodeNameSelector;
+           };
+       }
+   }
 
-  function compile() {
-      var seed = document.querySelectorAll('input');
-      var selector = 'Aaron [name=ttt]';
-      var elementMatchers = [];
-      var match = [{
-          matches: ['div'],
-          type: 'TAG',
-          value: 'Aaron'
-      }, {
-          type : ' ',
-          value: ' '
-      }, {
-          matches: ['name', '=', 'ttt'],
-          type: 'ATTR',
-          value: '[name=ttt]'
-      }]
+   function addCombinator(matcher) {
+       return function(elem, context, xml) {
+           while ((elem = elem['parentNode'])) {
+               if (elem.nodeType === 1) {
+                   return matcher[name];
+               }
+           }
+       }
+   }
 
-      elementMatchers.push(matcherFromTokens(match));
-      
+   function elementMatcher(matchers) {
+       return matchers.length > 1 ?
+              function(elem, context, xml) {
+                  var i = matchers.length;
+                  while(i--) {
+                      if (!matchers[i](elem, context, xml)) {
+                          return false;
+                      }
+                  }
+                  return true;
+              } :
+              matchers[0];
+   }
 
-      //超级匹配器
-      var cached = matcherFromGroupMatchers(elementMatchers);
-      results = cached(seed);
+   function matcherFromTokens(tokens) {
+       var len = tokens.length;
+       var matcher, matchers = [];
+       for (i = 0; i < len; i++) {
+           if (tokens[i].type === " ") {
+               matchers = [addCombinator(elementMatcher(matchers), matcher)];
+           } else {
+               matcher = filter[tokens[i].type].apply(null,
+                  tokens[i].matches);
+               matchers.push(matcher);
+           }
+       }
+       return elementMatcher(matchers);
+   }
 
-      results[0].checked = 'checked'
-  }
+   function matcherFromGroupMatchers(elementMatchers) {
+       var superMatcher = function(seed) {
+           var results = [];
+           var matcher, elem;
+           for (var i = 0; i < seed.length; i++) {
+               matcher = elementMatchers[0];
+               var elem = seed[i];
+               if (matcher(elem)) {
+                   results.push(elem);
+                   break;
+               }
+           }
+           return results;
+       };
+       return superMatcher;
+   }
  
-  function matcherFromTokens(tokens) {
-      var len = tokens.length;
-  }
+   function compile() {
+       var seed = document.querySelectorAll('input');
+       var selector = 'Aaron [name=ttt]';
+       var elementMatchers = [];
+       var match = [{
+           matchers: ['div'],
+           type: 'TAG',
+           value: 'Aaron'
+       }, {
+           type: " ",
+           value: " "
+       }, {
+           matches: ['name', '=', 'ttt'],
+           type: 'ATTR',
+           value: '[name=ttt]'
+       }]
 
+       elementMatchers.push(matcherFromTokens(match));
+
+       var cached = matcherFromGroupMatchers(elementMatchers)
+       result = cached(seed);
+       
+       results[0].checked = 'checked'
+   }
+
+   $("#test1").click(function() {
+       compile();
+   })
+   
 
 
 
